@@ -24,6 +24,8 @@ import com.rinhadebackend.mapper.TransacaoMapper;
 import com.rinhadebackend.repository.ClienteRepository;
 import com.rinhadebackend.repository.TransacaoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ClienteService {
     @Autowired
@@ -48,7 +50,13 @@ public class ClienteService {
         clienteRepository.save(cliente);
         return new CriarTransacaoDtoOutput(cliente.getLimite(), cliente.getSaldo());
     }
+    
+    public boolean checkIfUserExists() {
+        Optional<ClienteEntity> cliente = clienteRepository.findById(1L);
+        return cliente.isPresent();
+    }
 
+    @Transactional
     public CriarTransacaoDtoOutput realizarTransacao(CriarTransacaoDtoInput transacao, Long id) throws ResourceDoesNotExistException, ClienteLimiteMaximoAtingidoException {
         ClienteEntity cliente = clienteRepository.findById(id)
             .orElseThrow(() -> new ResourceDoesNotExistException(ApiErrors.CLIENTE_DOES_NOT_EXIST.code));
