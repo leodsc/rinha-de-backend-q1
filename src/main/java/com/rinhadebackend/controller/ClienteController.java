@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/clientes")
 public class ClienteController {
     @Autowired
     public ClienteService clienteService;
@@ -33,8 +33,10 @@ public class ClienteController {
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadClientes() {
+        if (clienteService.checkIfUserExists() == false) {
             ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("data.sql"));
         resourceDatabasePopulator.execute(dataSource);
+        }
     }
 
     @PostMapping("/{id}/transacoes")
